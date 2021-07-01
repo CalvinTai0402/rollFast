@@ -1,0 +1,20 @@
+.centerVandH {
+    margin: auto;
+    width: 90%;
+    padding: 10px;
+}
+
+.sideBarHeader {
+    margin: auto;
+    padding: 10px;
+}
+
+#sidebar .clickable {
+    cursor: pointer;
+}
+
+#sidebar .pro-sidebar {
+    width: 20px;
+    min-height: 100vh;
+    height: 100%;
+}
