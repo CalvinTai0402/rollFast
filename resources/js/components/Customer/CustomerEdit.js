@@ -23,41 +23,38 @@ class CustomerEdit extends Component {
         event.preventDefault();
         const { name, email } = this.state;
         if (this.isFormValid(this.state)) {
-            this.setState({ errors: [], loading: true });
+            this.setState({ loading: true });
             const id = this.props.match.params.id;
             const res = await axios.put(`/customers/${id}`, {
                 name: name,
                 email: email
             });
             if (res.data.status === 200) {
-                this.setState({ errors: [], loading: false });
+                this.setState({ loading: false });
                 this.props.history.push("/customers");
             }
-
-            // firebase
-            //     .auth()
-            //     .signInWithEmailAndPassword(this.state.email, this.state.password)
-            //     .then(signedInUser => {
-            //         console.log(signedInUser);
-            //         this.setState({ loading: false })
-            //     })
-            //     .catch(err => {
-            //         console.error(err);
-            //         this.setState({
-            //             errors: this.state.errors.concat(err),
-            //             loading: false
-            //         });
-            //     });
         }
     };
 
-    displayErrors = errors => errors.map((error, i) => <p key={i}>{error.message}</p>);
+    displayErrors = errors => errors.map((error, i) => <p key={i}>{error}</p>);
 
     handleInputError = (errors, inputName) => {
-        return errors.some(error => error.message.toLowerCase().includes(inputName)) ? "error" : "";
+        return errors.some(error => error.toLowerCase().includes(inputName)) ? "error" : "";
     };
 
-    isFormValid = ({ name, email }) => name && email;
+    isFormValid = ({ name, email }) => {
+        if (name && email){return true}
+        this.setState({ errors: [] }, ()=>{
+            const {errors} = this.state;
+            if (name.length == 0) {
+                errors.push("Name cannot be empty")
+            }
+            if (email.length == 0) {
+                errors.push("Email cannot be empty")
+            }
+            this.setState({errors})
+        });
+    };
 
     async componentDidMount() {
         const id = this.props.match.params.id;
@@ -86,7 +83,6 @@ class CustomerEdit extends Component {
                                         onChange={this.handleChange}
                                         value={name}
                                         className={this.handleInputError(errors, "name")}
-                                        type="name"
                                     />
                                 </Form.Field>
                                 <Form.Field>

@@ -23,41 +23,37 @@ class CustomerCreate extends Component {
         event.preventDefault();
         const { name, email } = this.state;
         if (this.isFormValid(this.state)) {
-            this.setState({ errors: [], loading: true });
-            const id = this.props.match.params.id;
+            this.setState({ loading: true });
             const res = await axios.post('/customers', {
                 name: name,
                 email: email
             });
             if (res.data.status === 201) {
-                this.setState({ errors: [], loading: false });
+                this.setState({loading: false });
                 this.props.history.push("/customers");
             }
-
-            // firebase
-            //     .auth()
-            //     .signInWithEmailAndPassword(this.state.email, this.state.password)
-            //     .then(signedInUser => {
-            //         console.log(signedInUser);
-            //         this.setState({ loading: false })
-            //     })
-            //     .catch(err => {
-            //         console.error(err);
-            //         this.setState({
-            //             errors: this.state.errors.concat(err),
-            //             loading: false
-            //         });
-            //     });
         }
     };
 
-    displayErrors = errors => errors.map((error, i) => <p key={i}>{error.message}</p>);
+    displayErrors = errors => errors.map((error, i) => <p key={i}>{error}</p>);
 
     handleInputError = (errors, inputName) => {
-        return errors.some(error => error.message.toLowerCase().includes(inputName)) ? "error" : "";
+        return errors.some(error => error.toLowerCase().includes(inputName)) ? "error" : "";
     };
 
-    isFormValid = ({ name, email }) => name && email;
+    isFormValid = ({ name, email }) => {
+        if (name && email){return true}
+        this.setState({ errors: [] }, ()=>{
+            const {errors} = this.state;
+            if (name.length == 0) {
+                errors.push("Name cannot be empty")
+            }
+            if (email.length == 0) {
+                errors.push("Email cannot be empty")
+            }
+            this.setState({errors})
+        });
+    };
 
     render() {
         const { name, email, errors, loading } = this.state;
@@ -79,7 +75,6 @@ class CustomerCreate extends Component {
                                         onChange={this.handleChange}
                                         value={name}
                                         className={this.handleInputError(errors, "name")}
-                                        type="name"
                                     />
                                 </Form.Field>
                                 <Form.Field>
@@ -100,7 +95,7 @@ class CustomerCreate extends Component {
                                     fluid
                                     size="large"
                                 >
-                                    Update
+                                    Create customer
                                 </Button>
                             </Segment>
                         </Form>
