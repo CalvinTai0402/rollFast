@@ -27,11 +27,7 @@ class UserController extends Controller
             ->skipPage($toSkip)
             ->take($limit)
             ->get();
-        $jsonEncodedUsers = [];
-        $jsonEncodedUsers["data"] = $users;
-        $jsonEncodedUsers["count"] = User::count();;
-        $jsonEncodedUsers["total"] = User::count();;
-        return response($jsonEncodedUsers, 200);
+        return response()->json(['count' => User::count(), 'total' => User::count(), 'data' => $users]);
     }
 
     /**
@@ -52,7 +48,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = User::create($request->all());
+        return response()->json(['status' => 201, 'user' => $user]);
     }
 
     /**
@@ -74,7 +71,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        return response()->json(['status' => 200, 'user' => $user]);
     }
 
     /**
@@ -86,7 +84,9 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+        $user->update($request->all());
+        return response()->json(['status' => 200, 'user' => $user]);
     }
 
     /**
@@ -97,6 +97,19 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        if ($user->delete()) {
+            return response()->json(["status" => 204]);
+        }
+    }
+
+    public function destroyMany(Request $request)
+    {
+        $filter = $request->input("filter");
+        $filter = json_decode($filter);
+        $ids = trim(json_encode($filter->id), "[]"); // $ids is of the string type
+        $usersToDelete = User::whereIn('id', explode(",", $ids))->get();
+        User::whereIn('id', explode(",", $ids))->delete();
+        return response()->json($usersToDelete, 200);
     }
 }

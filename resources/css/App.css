@@ -18,3 +18,15 @@
     min-height: 100vh;
     height: 100%;
 }
+
+.create {
+    position: relative;
+    margin-bottom: 10px;
+    width: 100px;
+}
+
+.delete {
+    position: relative;
+    margin-bottom: 10px;
+    width: 150px;
+}

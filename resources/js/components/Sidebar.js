@@ -3,13 +3,16 @@ import '../../css/App.css';
 import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { FaBattleNet } from "react-icons/fa";
-import Index from "./User/Index"
+import Home from "./Home"
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link
 } from "react-router-dom";
+import CustomerIndex from './Customer/CustomerIndex';
+import CustomerCreate from './Customer/CustomerCreate';
+import CustomerEdit from "./Customer/CustomerEdit";
 
 class Sidebar extends React.Component {
     state = {
@@ -34,8 +37,12 @@ class Sidebar extends React.Component {
                             <SidebarContent>
                                 <Menu iconShape="square">
                                     <MenuItem icon={<FaBattleNet />}>
-                                        Users
-                                        <Link to="/users" />
+                                        Home
+                                        <Link to="/" />
+                                    </MenuItem>
+                                    <MenuItem icon={<FaBattleNet />}>
+                                        Customers
+                                        <Link to="/customers" />
                                     </MenuItem>
                                 </Menu>
                             </SidebarContent>
@@ -43,9 +50,10 @@ class Sidebar extends React.Component {
                         </ProSidebar>
                         <div className="centerVandH">
                             <Switch>
-                                <Route path="/users">
-                                    <Index />
-                                </Route>
+                                <Route exact path="/customers" render={(props) => <CustomerIndex {...props} />} />
+                                <Route exact path="/customers/create" render={(props) => <CustomerCreate {...props} />} />
+                                <Route exact path="/customers/:id/edit" render={(props) => <CustomerEdit {...props} />} />
+                                <Route exact path="/" render={(props) => <Home {...props} />} />
                             </Switch>
                         </div>
                     </div>
