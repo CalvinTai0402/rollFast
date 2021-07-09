@@ -19,8 +19,8 @@ class CustomerEdit extends Component {
 
     handleChange = event => { this.setState({ [event.target.name]: event.target.value }); };
 
-    handleUpdate = async event => {
-        event.preventDefault();
+    handleUpdate = async () => {
+        // event.preventDefault();
         const { name, email } = this.state;
         if (this.isFormValid(this.state)) {
             this.setState({ loading: true });
@@ -29,7 +29,21 @@ class CustomerEdit extends Component {
                 name: name,
                 email: email
             });
-            if (res.data.status === 200) {
+            if (res.data.status === 422) {
+                this.setState({ loading: false });
+                let validationErrors = res.data.errors;
+                this.setState({ errors: [] }, () => {
+                    const { errors } = this.state;
+                    for (let key of Object.keys(validationErrors)) {
+                        let errorArrayForOneField = validationErrors[key]
+                        errorArrayForOneField.forEach(function (errorMessage, index) {
+                            errors.push(errorMessage)
+                        });
+                    }
+                    this.setState({ errors })
+                });
+            }
+            else if (res.data.status === 200) {
                 this.setState({ loading: false });
                 this.props.history.push("/customers");
             }
@@ -43,16 +57,16 @@ class CustomerEdit extends Component {
     };
 
     isFormValid = ({ name, email }) => {
-        if (name && email){return true}
-        this.setState({ errors: [] }, ()=>{
-            const {errors} = this.state;
-            if (name.length == 0) {
+        if (name && email) { return true }
+        this.setState({ errors: [] }, () => {
+            const { errors } = this.state;
+            if (name.length === 0) {
                 errors.push("Name cannot be empty")
             }
-            if (email.length == 0) {
+            if (email.length === 0) {
                 errors.push("Email cannot be empty")
             }
-            this.setState({errors})
+            this.setState({ errors }) // the reason for this is to re-render
         });
     };
 

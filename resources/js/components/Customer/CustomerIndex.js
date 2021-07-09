@@ -113,7 +113,7 @@ class CustomerIndex extends React.Component {
                                             );
                                         case 'actions':
                                             return (
-                                                <div style={{ display: "inline-block", justifyContent: "space-between" }}>
+                                                <div style={{ display: "flex", justifyContent: "space-between" }}>
                                                     <button className="btn btn-primary" style={{ marginRight: "5px" }}>
                                                         <Link to={'customers/' + row.id + '/edit'}>
                                                             <AiFillEdit color="white" />

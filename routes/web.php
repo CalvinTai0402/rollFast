@@ -14,15 +14,14 @@ use App\Http\Controllers\CustomerController;
 |
 */
 
-Route::get('/', function () {
-    return view('reactApp');
-});
+
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Route::group(['middleware' => ['auth']], function () {
-//     Route::resource("users", UserController::class);
-// });
-
-Route::resource("customers", CustomerController::class);
-Route::post("customers/deleteMany",  [CustomerController::class, 'destroyMany'])->name('customers.destroyMany');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', function () {
+        return view('reactApp');
+    });
+    Route::resource("customers", CustomerController::class);
+    Route::post("customers/deleteMany",  [CustomerController::class, 'destroyMany'])->name('customers.destroyMany');
+});
