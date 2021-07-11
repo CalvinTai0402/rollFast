@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\UtilitiesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +26,8 @@ Route::group(['middleware' => ['auth']], function () {
     });
     Route::resource("customers", CustomerController::class);
     Route::post("customers/deleteMany",  [CustomerController::class, 'destroyMany'])->name('customers.destroyMany');
+    Route::resource("users", UserController::class);
 });
+
+Route::get('/token', [UtilitiesController::class, 'token']);
+Route::get('/getLoggedInUsername', [UtilitiesController::class, 'getLoggedInUsername']);

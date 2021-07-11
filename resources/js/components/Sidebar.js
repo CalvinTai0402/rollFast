@@ -16,23 +16,34 @@ import CustomerEdit from "./Customer/CustomerEdit";
 
 class Sidebar extends React.Component {
     state = {
-        menuCollapse: false
+        menuCollapse: false,
+        loggedInUserName: "Guest",
     };
 
-    menuIconClick = () => {
+    async componentDidMount() {
+        const res = await axios.get("/getLoggedInUsername")
+        console.log(res)
+        this.setState({ loggedInUserName: res.data.loggedInUserName })
+    }
+
+    menuIconClick = async () => {
+        const res = await axios.get("/getLoggedInUsername")
+        console.log(res)
         const { menuCollapse } = this.state;
         menuCollapse ? this.setState({ menuCollapse: false }) : this.setState({ menuCollapse: true })
     };
 
+
     render() {
-        const { menuCollapse } = this.state;
+
+        const { menuCollapse, loggedInUserName } = this.state;
         return (
             <div >
                 <Router>
                     <div id="sidebar" style={{ display: 'grid', gridTemplateColumns: '200px auto' }}>
                         <ProSidebar className='sideBar' collapsed={menuCollapse}>
                             <SidebarHeader className="sideBarHeader">
-                                <p className="clickable" onClick={this.menuIconClick}>{menuCollapse ? "R.F." : "Roll Fast"}</p>
+                                <p className="clickable" onClick={this.menuIconClick}>{menuCollapse ? "R.F." : "Roll Fast"}{menuCollapse ? "" : ", " + loggedInUserName}</p>
                             </SidebarHeader>
                             <SidebarContent>
                                 <Menu iconShape="square">
